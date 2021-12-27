@@ -1,22 +1,22 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const validator = require("../validators");
-const User = require('./../models/user')
+const User = require("./../models/user");
 
 module.exports = async (req, res) => {
-    const { email, password } = req.body;
-    const { error } = validator.login({ email });
-    if (error && error.details) return res.status(400).send({ message: error.details[0].message, code: 400 });
+	const { email, password } = req.body;
+	const { error } = validator.login({ email, password });
+	if (error && error.details) return res.status(400).json({ message: error.details[0].message, code: 400 });
 
-    const existingUser = await User.findOne({ email });
-    if (!existingUser) return res.status(404).send({ message: "Invalid email or password.", code: 404 });
+	const existingUser = await User.findOne({ email });
+	if (!existingUser) return res.status(404).json({ message: "Invalid email or password.", code: 404 });
 
-    const isMatched = await bcrypt.compare(password, existingUser.password);
-    if (!isMatched) return res.status(404).send({ message: "Invalid email or password.", code: 404 });
+	const isMatched = await bcrypt.compare(password, existingUser.password);
+	if (!isMatched) return res.status(404).json({ message: "Invalid email or password.", code: 404 });
 
-    const privateKey = 'randomName';
-    const token = jwt.sign({ email }, privateKey);
+	const privateKey = process.env.BCRYPT_PRIVATE_KEY;
+	const token = jwt.sign({ email }, privateKey);
 
-    res.status(200).send({ token, message: 'login succesfully', code: 200 });
-}
+	res.status(200).json({ token, message: "login successfully", code: 200 });
+};

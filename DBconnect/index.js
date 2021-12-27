@@ -1,8 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 module.exports = () => {
-    mongoose.connect("mongodb+srv://umesh:umesh2611@cluster0.ir2pt.mongodb.net/AuthDB?retryWrites=true&w=majority", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-}
+	const { DB_USER, DB_PASSWORD } = process.env;
+	mongoose.connect(
+		`mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.j86ef.mongodb.net/learning?retryWrites=true&w=majority`,
+		{
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		},
+	);
+};
